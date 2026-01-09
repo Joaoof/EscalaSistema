@@ -19,7 +19,7 @@ public class CultController : ControllerBase
         var cult = new Cult { 
             Id = Guid.NewGuid(),
             Name = "Cult Name",
-            DateTime = DateTime.Now 
+            DateTime = DateTime.UtcNow 
         };
         _db.Cults.Add(cult);
         _db.SaveChanges();
