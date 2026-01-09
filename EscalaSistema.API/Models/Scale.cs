@@ -1,4 +1,4 @@
-﻿namespace EscalaSistema.API.Models;
+﻿namespace EscalaSistema.API.Models; 
 
 public class Scale
 {
