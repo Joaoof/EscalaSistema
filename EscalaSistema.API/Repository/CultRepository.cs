@@ -1,10 +1,11 @@
 ﻿using EscalaSistema.API.Data;
+using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace EscalaSistema.API.Repository;
 
-public class CultRepository
+public class CultRepository : ICultRepository
 {
     private readonly EscalaSistemaDbContext _context;
 
