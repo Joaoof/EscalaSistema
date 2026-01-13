@@ -1,5 +1,8 @@
 ﻿using EscalaSistema.API.Data;
+using EscalaSistema.API.DTOs;
 using EscalaSistema.API.Models;
+using EscalaSistema.API.Validation;
+using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
@@ -14,15 +17,23 @@ public class CultController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult Create()
+    public async Task<IActionResult> Create([FromBody] CultResponse cut, [FromServices] IValidator<Cult> validator)
     {
-        var cult = new Cult { 
+        var cult = new Cult
+        {
             Id = Guid.NewGuid(),
-            Name = "Cult Name",
-            DateTime = DateTime.UtcNow 
+            Name = cut.Name,
+            DateTime = cut.Date
         };
+        var validationResult = await validator.ValidateAsync(cult);
+
+        if (!validationResult.IsValid)
+        {
+            // Retorna HTTP 400 com a lista de erros
+            return BadRequest(validationResult.Errors);
+        }
         _db.Cults.Add(cult);
-        _db.SaveChanges();
+        await _db.SaveChangesAsync();
 
         return Ok(cult);
     }
