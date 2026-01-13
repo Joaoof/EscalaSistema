@@ -1,4 +1,6 @@
 using EscalaSistema.API.Data;
+using EscalaSistema.API.Interface.Repository;
+using EscalaSistema.API.Repository;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -14,6 +16,8 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
+
+builder.Services.AddScoped<ICultRepository, CultRepository>();
 
 var app = builder.Build();
 
