@@ -27,7 +27,7 @@ public class MusicRepository : IMusicRepository
 
     public async Task AddAsync(Music music)
     {
-        var getByCult = await _context.Cults.FindAsync(music.CultId) ?? throw new BadRequestException("Id não encontrado", 400);
+        var getByCult = await _context.Cults.FindAsync(music.CultId) ?? throw new BadRequestException("Id não encontrado");
 
         await _context.Musics.AddAsync(music);
         await _context.SaveChangesAsync();
