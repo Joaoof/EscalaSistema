@@ -1,6 +1,9 @@
 using EscalaSistema.API.Data;
 using EscalaSistema.API.Interface.Repository;
+using EscalaSistema.API.Interface.UseCase;
+using EscalaSistema.API.Middleware;
 using EscalaSistema.API.Repository;
+using EscalaSistema.API.UseCase;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 
@@ -18,6 +21,10 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 
 builder.Services.AddScoped<ICultRepository, CultRepository>();
+builder.Services.AddScoped<ICultUseCase, CultUseCase>();
+
+builder.Services.AddScoped<IMusicRepository, MusicRepository>();
+builder.Services.AddScoped<IMusicUseCase, MusicUseCase>();
 
 var app = builder.Build();
 
@@ -33,5 +40,7 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+
+app.UseMiddleware<CustomExceptionMiddleware>();
 
 app.Run();
