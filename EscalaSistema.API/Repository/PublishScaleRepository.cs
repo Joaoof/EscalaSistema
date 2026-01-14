@@ -14,32 +14,32 @@ namespace EscalaSistema.API.Repository
             _context = context;
         }
 
+
         public async Task PublishScaleAsync(Guid scaleId)
         {
-            var scale = await _context.Scales.Include(s => s.ScaleAssignments).FirstOrDefaultAsync(s => s.Id == scaleId);
+            var scale = await _context.Scales.FirstOrDefaultAsync(s => s.Id == scaleId);
 
             if (scale is null)
             {
                 throw new NotFoundException("Não encontrada");
             }
             
+            if (scale.IsClosed)
+            {
+                throw new BadRequestException("Escala encerrada não pode ser publicada");
+            }
+
             if (scale.IsPublished)
             {
                 throw new BadRequestException("Escala já publicada");
             }
 
-            if (scale.IsClosed == true)
-            {
-                throw new BadRequestException("Escala encerrada não pode ser publicada");
-            }
+            var hasAssignments = await _context.ScaleAssignments.AnyAsync(sa => sa.ScaleId == scaleId);
 
-            if(scale.ScaleAssignments.Count == 0)
-            {
-                throw new BadRequestException("Escala sem atribuições não pode ser publicada");
-            }
+            if (hasAssignments is false)
+                throw new BadRequestException("Escala sem músicos não pode ser publicada");
 
-            scale.IsPublished = true;
-            scale.PublishedAt = DateTime.UtcNow;
+            scale.Publish();
 
             await _context.SaveChangesAsync();
         }

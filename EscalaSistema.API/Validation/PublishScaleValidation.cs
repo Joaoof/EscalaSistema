@@ -22,7 +22,7 @@ public class PublishScaleValidation: AbstractValidator<Scale>
             .WithMessage("O culto associado à escala é obrigatório.");
         RuleFor(scale => scale.ScaleAssignments.Any())
             .NotEmpty()
-            .Must(assignments => assignments.All(a => a.Musician != null))
+            .Must((bool assignments) => assignments)
             .WithMessage("Todas as músicas na escala devem ser válidas.");
         RuleFor(scale => scale.ScaleAssignments)
             .Must(assignments => assignments.All(a => a.MusicianId != Guid.Empty))

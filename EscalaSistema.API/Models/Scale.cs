@@ -10,4 +10,11 @@ public class Scale
     public DateTime PublishedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
     public ICollection<ScaleAssignment> ScaleAssignments { get; set; }
+
+    public void Publish()
+    {
+        IsPublished = true;
+        IsClosed = true;
+        PublishedAt = DateTime.UtcNow;
+    }
 }
