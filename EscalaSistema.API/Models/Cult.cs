@@ -11,5 +11,4 @@ public class Cult
     public Guid MusicId { get; set; }
     public ICollection<Music> Musics { get; set; }
     public Scale Scale { get; set; }
-
 }

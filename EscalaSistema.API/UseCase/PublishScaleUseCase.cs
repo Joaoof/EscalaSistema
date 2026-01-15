@@ -1,36 +1,36 @@
-﻿using EscalaSistema.API.DTOs;
-using EscalaSistema.API.Interface.Repository;
+﻿using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Interface.UseCase;
-using EscalaSistema.API.Models;
-using FluentValidation;
+using EscalaSistema.API.Middleware;
 
 namespace EscalaSistema.API.UseCase;
 
-public class PublishScaleUseCase: IPublishScaleUseCase
+public class PublishScaleUseCase : IPublishScaleUseCase
 {
     private readonly IPublishScaleRepository _publishScaleRepository;
-    private readonly IValidator<CreateScaleRequest> _validator;
 
-    public PublishScaleUseCase(IPublishScaleRepository publishScaleRepository, IValidator<CreateScaleRequest> validator)
+    public PublishScaleUseCase(IPublishScaleRepository publishScaleRepository)
     {
         _publishScaleRepository = publishScaleRepository;
-        _validator = validator;
     }
 
-    public async Task<Scale> Register (CreateScaleRequest scale)
+    public async Task ExecuteAsync(Guid scaleId)
     {
-        var validationResult = await _validator.ValidateAsync(scale);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(validationResult.Errors);
-        }   
-        await _publishScaleRepository.PublishScaleAsync(scale.CultId);
+        var scale = await _publishScaleRepository.GetByIdAsync(scaleId);
 
-        var result = new Scale
-        {
-            CultId = scale.CultId
-        };
+        if (scale == null)
+            throw new NotFoundException("Escala não encontrada");
 
-        return result;
+        if (scale.IsClosed)
+            throw new BadRequestException("Escala encerrada não pode ser publicada");
+
+        if (scale.IsPublished)
+            throw new BadRequestException("Escala já publicada");
+
+        if (!scale.ScaleAssignments.Any())
+            throw new BadRequestException("Escala sem músicos não pode ser publicada");
+
+        scale.Publish();
+
+        await _publishScaleRepository.SaveAsync();
     }
 }

@@ -1,5 +1,4 @@
 using EscalaSistema.API.Data;
-using EscalaSistema.API.DTOs;
 using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Interface.UseCase;
 using EscalaSistema.API.Middleware;
@@ -20,8 +19,9 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
-builder.Services.AddValidatorsFromAssemblyContaining<CreatePublishScaleValidation>();
+builder.Services.AddValidatorsFromAssemblyContaining<PublishScaleValidation>();
 
 builder.Services.AddScoped<ICultRepository, CultRepository>();
 builder.Services.AddScoped<ICultUseCase, CultUseCase>();
@@ -32,6 +32,11 @@ builder.Services.AddScoped<IMusicUseCase, MusicUseCase>();
 builder.Services.AddScoped<IPublishScaleRepository, PublishScaleRepository>();
 builder.Services.AddScoped<IPublishScaleUseCase, PublishScaleUseCase>();
 
+builder.Services.AddScoped<ICreateScaleUseCase, ScaleUseCase>();
+builder.Services.AddScoped<ICreateScaleRepository, ScaleRepository>();
+
+builder.Services.AddScoped<IAssignMusicianUseCase, AssignMusicianUseCase>();
+builder.Services.AddScoped<IAssignMusicianRepository, AssignMusicianRepository>();
 
 var app = builder.Build();
 

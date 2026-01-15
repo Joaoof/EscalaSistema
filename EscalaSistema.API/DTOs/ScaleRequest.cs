@@ -1,6 +1,6 @@
 ﻿namespace EscalaSistema.API.DTOs;
 
-public class CreateScaleRequest
+public class ScaleRequest
 {
     public Guid CultId { get; set; }
 }

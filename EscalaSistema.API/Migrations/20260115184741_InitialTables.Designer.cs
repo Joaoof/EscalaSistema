@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EscalaSistema.API.Migrations
 {
     [DbContext(typeof(EscalaSistemaDbContext))]
-    [Migration("20260108192300_AddModels")]
-    partial class AddModels
+    [Migration("20260115184741_InitialTables")]
+    partial class InitialTables
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -39,6 +39,9 @@ namespace EscalaSistema.API.Migrations
 
                     b.Property<DateTime>("IsPublished")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid>("MusicId")
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -81,6 +84,8 @@ namespace EscalaSistema.API.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("CultId");
+
                     b.ToTable("Musics");
                 });
 
@@ -121,19 +126,25 @@ namespace EscalaSistema.API.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uuid");
 
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("timestamp with time zone");
-
                     b.Property<Guid>("CultId")
                         .HasColumnType("uuid");
 
                     b.Property<bool>("IsClosed")
                         .HasColumnType("boolean");
 
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTime>("PublishedAt")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("CultId")
+                        .IsUnique();
 
                     b.ToTable("Scales");
                 });
@@ -160,6 +171,10 @@ namespace EscalaSistema.API.Migrations
                         .HasColumnType("uuid");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("MusicianId");
+
+                    b.HasIndex("ScaleId");
 
                     b.ToTable("ScaleAssignments");
                 });
@@ -197,6 +212,65 @@ namespace EscalaSistema.API.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("EscalaSistema.API.Models.Music", b =>
+                {
+                    b.HasOne("EscalaSistema.API.Models.Cult", "Cult")
+                        .WithMany("Musics")
+                        .HasForeignKey("CultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cult");
+                });
+
+            modelBuilder.Entity("EscalaSistema.API.Models.Scale", b =>
+                {
+                    b.HasOne("EscalaSistema.API.Models.Cult", "Cult")
+                        .WithOne("Scale")
+                        .HasForeignKey("EscalaSistema.API.Models.Scale", "CultId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Cult");
+                });
+
+            modelBuilder.Entity("EscalaSistema.API.Models.ScaleAssignment", b =>
+                {
+                    b.HasOne("EscalaSistema.API.Models.Musician", "Musician")
+                        .WithMany("ScaleAssignments")
+                        .HasForeignKey("MusicianId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("EscalaSistema.API.Models.Scale", "Scale")
+                        .WithMany("ScaleAssignments")
+                        .HasForeignKey("ScaleId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Musician");
+
+                    b.Navigation("Scale");
+                });
+
+            modelBuilder.Entity("EscalaSistema.API.Models.Cult", b =>
+                {
+                    b.Navigation("Musics");
+
+                    b.Navigation("Scale")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("EscalaSistema.API.Models.Musician", b =>
+                {
+                    b.Navigation("ScaleAssignments");
+                });
+
+            modelBuilder.Entity("EscalaSistema.API.Models.Scale", b =>
+                {
+                    b.Navigation("ScaleAssignments");
                 });
 #pragma warning restore 612, 618
         }

@@ -42,5 +42,11 @@ public class EscalaSistemaDbContext: DbContext
             .WithMany(m => m.ScaleAssignments)
             .HasForeignKey(sa => sa.MusicianId)
             .IsRequired();
+
+        modelBuilder.Entity<Cult>()
+            .HasOne(c => c.Scale)
+            .WithOne(s => s.Cult)
+    .       HasForeignKey<Scale>(s => s.CultId);
+
     }
 }

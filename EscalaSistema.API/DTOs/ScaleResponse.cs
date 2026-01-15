@@ -8,7 +8,7 @@ public class ScaleResponse
     public bool IsPublished { get; set; }
     public bool IsClosed { get; set; }
 
-    public DateTime? PublishedAt { get; set; }
+    public bool PublishedAt { get; set; }
     public DateTime UpdatedAt { get; set; }
 
     public int AssignmentsCount { get; set; }

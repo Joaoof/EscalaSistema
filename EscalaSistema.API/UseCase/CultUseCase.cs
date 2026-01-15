@@ -22,7 +22,8 @@ public class CultUseCase : ICultUseCase
         {
             Id = Guid.NewGuid(),
             Name = cultResponse.Name,
-            DateTime = cultResponse.Date,
+            DateTime = cultResponse.Date
+            
         };
 
         var validationResult = await _validator.ValidateAsync(cult);

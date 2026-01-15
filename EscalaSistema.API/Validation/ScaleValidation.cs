@@ -3,9 +3,9 @@ using FluentValidation;
 
 namespace EscalaSistema.API.Validation
 {
-    public class CreatePublishScaleValidation : AbstractValidator<CreateScaleRequest>
+    public class ScaleValidation : AbstractValidator<ScaleRequest>
     {
-        public CreatePublishScaleValidation()
+        public ScaleValidation()
         {
             RuleFor(x => x.CultId)
             .NotEmpty()
