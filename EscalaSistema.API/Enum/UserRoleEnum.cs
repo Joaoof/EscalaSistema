@@ -5,7 +5,10 @@ namespace EscalaSistema.API.Enum;
 public enum UserRoleEnum
 {
     [Description("Leader")]
-    Leader = 0,
+    Leader = 1,
     [Description("Musician")]
-    Musician = 1,
+    Musician = 2,
+    [Description("Administrator")]
+    Administrator = 3,
+
 }

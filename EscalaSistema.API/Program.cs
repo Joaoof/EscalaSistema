@@ -3,6 +3,7 @@ using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Interface.UseCase;
 using EscalaSistema.API.Middleware;
 using EscalaSistema.API.Repository;
+using EscalaSistema.API.Repository.Login;
 using EscalaSistema.API.UseCase;
 using EscalaSistema.API.Validation;
 using FluentValidation;
@@ -29,7 +30,7 @@ builder.Services.AddScoped<ICultUseCase, CultUseCase>();
 builder.Services.AddScoped<IMusicRepository, MusicRepository>();
 builder.Services.AddScoped<IMusicUseCase, MusicUseCase>();
 
-builder.Services.AddScoped<IPublishScaleRepository, PublishScaleRepository>();
+builder.Services.AddScoped<IPublishScaleRepository, PublishScaleRepository>();  
 builder.Services.AddScoped<IPublishScaleUseCase, PublishScaleUseCase>();
 
 builder.Services.AddScoped<ICreateScaleUseCase, ScaleUseCase>();
@@ -37,6 +38,12 @@ builder.Services.AddScoped<ICreateScaleRepository, ScaleRepository>();
 
 builder.Services.AddScoped<IAssignMusicianUseCase, AssignMusicianUseCase>();
 builder.Services.AddScoped<IAssignMusicianRepository, AssignMusicianRepository>();
+
+builder.Services.AddScoped<ICreateMusicianUseCase, CreateMusicianUseCase>();
+builder.Services.AddScoped<IMusicianRepository, MusicianRepository>();
+
+builder.Services.AddScoped<IUserRegisterUseCase, UserRegisterUseCase>();
+builder.Services.AddScoped<IUserRegisterRepository, UserRegisterRepository>();
 
 var app = builder.Build();
 
