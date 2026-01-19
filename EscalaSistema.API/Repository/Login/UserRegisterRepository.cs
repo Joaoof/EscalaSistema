@@ -1,13 +1,15 @@
 ﻿using EscalaSistema.API.Data;
 using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Models;
-using System.Security.AccessControl;
+using Microsoft.EntityFrameworkCore;
 
 namespace EscalaSistema.API.Repository.Login;
 
 public class UserRegisterRepository : IUserRegisterRepository
 {
     private readonly EscalaSistemaDbContext _context;
+
+    public string Password { get; private set; }
 
     public UserRegisterRepository(EscalaSistemaDbContext context)
     {
@@ -26,9 +28,23 @@ public class UserRegisterRepository : IUserRegisterRepository
 
     public async Task<User> RegisterUserAsync(User user)
     {
-        await _context.Users.AddAsync(user);
+        var salt = DevOne.Security.Cryptography.BCrypt.BCryptHelper.GenerateSalt();
+        var newUser = new User
+        {
+            Id = Guid.NewGuid(),
+            Email = user.Email,
+            Username = user.Username,
+            Role = user.Role,
+            PasswordHash = DevOne.Security.Cryptography.BCrypt.BCryptHelper.HashPassword(user.PasswordHash, salt),
+            IsActive = true,
+            CreatedAt = DateTime.UtcNow,
+            UpdatedAt = DateTime.UtcNow
+        };
+
+        await _context.Users.AddAsync(newUser);
         await _context.SaveChangesAsync();
-        return user;
+
+        return newUser;
     }
 
     public async Task<User?> GetUserByEmailAsync(string email)
@@ -36,8 +52,8 @@ public class UserRegisterRepository : IUserRegisterRepository
         return await Task.FromResult(_context.Users.FirstOrDefault(u => u.Email == email));
     }
 
-    public async Task<User> GetAllByUserAsync()
+    public async Task<List<User>> GetAllByUserAsync()
     {
-        return await Task.FromResult(_context.Users.FindAsync())
+        return await _context.Users.AsNoTracking().ToListAsync();
     }
 }

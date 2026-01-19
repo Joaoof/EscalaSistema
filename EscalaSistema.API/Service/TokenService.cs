@@ -1,12 +1,13 @@
 ﻿using EscalaSistema.API.Auth;
+using EscalaSistema.API.Interface.UseCase;
 using EscalaSistema.API.Models;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Text;
 
 namespace EscalaSistema.API.Service
-{
-    public class TokenService
+{   
+    public class TokenService: ITokenService
     {
         public string GenerateToken(User user)
         {
@@ -16,7 +17,7 @@ namespace EscalaSistema.API.Service
 
             var claims = new[]
             {
-                new System.Security.Claims.Claim(JwtRegisteredClaimNames.UniqueName, user.Username),
+                new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, user.Id.ToString()),
                 new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email, user.Email),
                 new System.Security.Claims.Claim("role", user.Role.ToString()),
             };

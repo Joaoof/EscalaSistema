@@ -49,4 +49,9 @@ public class EscalaSistemaDbContext: DbContext
     .       HasForeignKey<Scale>(s => s.CultId);
 
     }
+
+    internal async Task<User> GetByEmailAsync(string email)
+    {
+        throw new NotImplementedException();
+    }
 }

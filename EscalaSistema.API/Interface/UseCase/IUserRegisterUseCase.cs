@@ -4,5 +4,7 @@ namespace EscalaSistema.API.Interface.UseCase;
 
 public interface IUserRegisterUseCase
 {
-    Task Execute(User user);
+    Task<User> Execute(User user);
+
+    Task<List<User>> GetUser();
 }

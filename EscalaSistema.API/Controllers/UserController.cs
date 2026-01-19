@@ -17,4 +17,11 @@ public class UserController : ControllerBase
         await userRegisterUseCase.Execute(user);
         return Ok();
     }
+
+    [HttpGet]
+    public async Task<IActionResult> GetUser([FromServices] IUserRegisterUseCase userRegisterUseCase)
+    {
+        var user = await userRegisterUseCase.GetUser();
+        return Ok(user);
+    }
 }
