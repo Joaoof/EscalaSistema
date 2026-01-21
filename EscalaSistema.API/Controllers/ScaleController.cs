@@ -9,7 +9,8 @@ namespace EscalaSistema.API.Controllers;
 public class ScaleController: ControllerBase
 {
     [HttpPost]
-    [Authorize]
+    [Authorize(Roles = "Leader")]
+    [Authorize(Policy = "CanPublishScale")]
     public async Task<IActionResult> Create(Guid cultId, [FromServices] ICreateScaleUseCase createScaleUseCase)
     {
         var scale = await createScaleUseCase.Register(cultId);

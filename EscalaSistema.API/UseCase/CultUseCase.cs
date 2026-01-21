@@ -1,4 +1,5 @@
-﻿using EscalaSistema.API.DTOs;
+﻿using EscalaSistema.API.Domain.Errors;
+using EscalaSistema.API.DTOs;
 using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Interface.UseCase;
 using EscalaSistema.API.Models;
@@ -9,20 +10,19 @@ namespace EscalaSistema.API.UseCase;
 public class CultUseCase : ICultUseCase
 {
     private readonly ICultRepository _cultRepository;
-    private readonly IValidator<Cult> _validator;
-    public CultUseCase(ICultRepository cultRepository, IValidator<Cult> validator)
+    private readonly IValidator<CultRequest> _validator;
+    public CultUseCase(ICultRepository cultRepository, IValidator<CultRequest> validator)
     {
         _cultRepository = cultRepository;
         _validator = validator;
     }
 
-    public async Task<Cult> Register(CultResponse cultResponse)
+    public async Task<CultResponse> Register(CultRequest cult)
     {
-        var cult = new Cult
+        var register = new Cult
         {
-            Id = Guid.NewGuid(),
-            Name = cultResponse.Name,
-            DateTime = cultResponse.Date
+            Name = cult.Name,   
+            DateTime = cult.DateTime,
             
         };
 
@@ -33,7 +33,14 @@ public class CultUseCase : ICultUseCase
         }
 
         await _cultRepository.AddAsync(cult);
-        return cult;
+
+        return new CultResponse
+        {
+            Name = register.Name,
+            Date = register.DateTime,
+            IsPublished = false,
+            IsClosed = false
+        };
 
     }
 

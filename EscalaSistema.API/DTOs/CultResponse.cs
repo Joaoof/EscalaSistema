@@ -2,7 +2,6 @@
 
 public class CultResponse
 {
-    public Guid Id { get; set; }
     public string Name { get; set; }
     public DateTime Date { get; set; }
     public bool IsPublished { get; set; }

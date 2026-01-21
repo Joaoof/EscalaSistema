@@ -1,4 +1,5 @@
 ﻿using EscalaSistema.API.Data;
+using EscalaSistema.API.DTOs;
 using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Models;
 using Microsoft.EntityFrameworkCore;
@@ -29,10 +30,20 @@ public class CultRepository : ICultRepository
         return await _context.Cults.ToListAsync();
     }
 
-    public async Task AddAsync(Cult cult)
+    public async Task<CultResponse> AddAsync(CultRequest cult)
     {
-        await _context.Cults.AddAsync(cult);
+       var register = await _context.Cults.AddAsync(new Cult
+        {
+            Name = cult.Name,
+            DateTime = cult.DateTime,
+        });
         await _context.SaveChangesAsync();
+
+        return new CultResponse
+        {
+            Name = register.Entity.Name,
+            Date = register.Entity.DateTime,
+        };
     }
 
     public async Task DeleteAsync(Guid id)
@@ -43,5 +54,37 @@ public class CultRepository : ICultRepository
             _context.Cults.Remove(cult);
             await _context.SaveChangesAsync();
         }
+    }
+
+    public async Task<CultResponse> GetByNameCult(string name)
+    {
+        var search = await _context.Cults.FirstOrDefaultAsync(n => n.Name == name);
+
+        return new CultResponse
+        {
+            Name = search.Name,
+            Date = search.DateTime,
+        };
+    }
+
+    public async Task<CultResponse> GetByIdCult(Guid id)
+    {
+        var search = await _context.Cults.FindAsync(id);
+        return new CultResponse
+        {
+            Name = search.Name,
+            Date = search.DateTime,
+        };
+    }
+
+    public async Task<CultResponse> GetByDateTime(DateTime date)
+    {
+        var data = await _context.Cults.FirstOrDefaultAsync(d => d.DateTime == date);
+
+        return new CultResponse
+        {
+            Name = data.Name,
+            Date = data.DateTime
+        };
     }
 }

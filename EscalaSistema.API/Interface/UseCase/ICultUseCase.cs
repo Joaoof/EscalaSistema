@@ -5,6 +5,6 @@ namespace EscalaSistema.API.Interface.UseCase;
 
 public interface ICultUseCase
 {
-    Task<Cult> Register(CultResponse cultResponse);
+    Task<CultResponse> Register(CultRequest cult);
     Task<IEnumerable<Cult>> GetAllCultsAsync();
 }

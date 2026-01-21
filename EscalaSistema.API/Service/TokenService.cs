@@ -9,11 +9,17 @@ namespace EscalaSistema.API.Service
 {   
     public class TokenService: ITokenService
     {
+        private readonly IConfiguration _configuration;
+
+        public TokenService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public string GenerateToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var key = Encoding.ASCII.GetBytes(Configuration.JwtSecretKey);
+            var key = Encoding.ASCII.GetBytes(_configuration["Jwt:Key"]);
 
             var claims = new[]
             {
@@ -26,6 +32,8 @@ namespace EscalaSistema.API.Service
             {
                 Subject = new System.Security.Claims.ClaimsIdentity(claims),
                 Expires = DateTime.UtcNow.AddHours(8),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
 

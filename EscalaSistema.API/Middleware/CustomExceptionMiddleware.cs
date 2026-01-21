@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using EscalaSistema.API.Domain.Errors;
+using Microsoft.AspNetCore.Mvc;
 using System.Text.Json;
 
 namespace EscalaSistema.API.Middleware;
@@ -20,72 +21,45 @@ public class CustomExceptionMiddleware
         {
             await _next(context);
         }
+        catch (DomainException ex)
+        {
+            var problem = new ProblemDetails
+            {
+                Title = ex.Error.Title,
+                Detail = ex.Error.Detail,
+                Status = ex.Error.StatusCode,
+                Type = $"https://httpstatuses.com/{ex.Error.StatusCode}"
+            };
+
+            problem.Extensions["code"] = ex.Error.Code;
+
+            context.Response.StatusCode = ex.Error.StatusCode;
+            context.Response.ContentType = "application/problem+json";
+
+            await context.Response.WriteAsJsonAsync(problem);
+        }
+
         catch (Exception ex)
         {
-           await HandleExceptionAsync(context, ex);
-        }
-    }
+            // 2. LOGUE O ERRO REAL AQUI
+            _logger.LogError(ex, "Erro inesperado aconteceu: {Message}", ex.Message);
 
-    private async Task HandleExceptionAsync(HttpContext context, Exception exception)
-    {
-        _logger.LogError(exception, exception.Message);
+            context.Response.StatusCode = 500;
+            context.Response.ContentType = "application/json";
 
-        context.Response.ContentType = "application/json";
-
-        // 1️⃣ FluentValidation
-        if (exception is FluentValidation.ValidationException validationEx)
-        {
-            context.Response.StatusCode = StatusCodes.Status400BadRequest;
-
-            var errors = validationEx.Errors
-                .Select(e => e.ErrorMessage)
-                .ToList();
-
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new
+            // (Opcional para Debug) Você pode passar ex.Message temporariamente
+            // mas em produção, mantenha a mensagem genérica.
+            var response = new
             {
                 success = false,
-                message = "Erro de validação",
-                errors = errors
-            }));
+                error = new
+                {
+                    code = "INTERNAL_ERROR",
+                    message = "Erro interno no servidor" // O erro real agora está no console/logs
+                }
+            };
 
-            return;
+            await context.Response.WriteAsync(JsonSerializer.Serialize(response));
         }
-
-        // 2️⃣ BadRequest custom
-        if (exception is BadRequestException badRequest)
-        {
-            context.Response.StatusCode = badRequest.StatusCode;
-
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new
-            {
-                success = false,
-                message = badRequest.Message
-            }));
-
-            return;
-        }
-
-        // 3️⃣ NotFound custom (se existir)
-        if (exception is NotFoundException notFound)
-        {
-            context.Response.StatusCode = StatusCodes.Status404NotFound;
-
-            await context.Response.WriteAsync(JsonSerializer.Serialize(new
-            {
-                success = false,
-                message = notFound.Message
-            }));
-
-            return;
-        }
-
-        // 4️⃣ Fallback
-        context.Response.StatusCode = StatusCodes.Status500InternalServerError;
-
-        await context.Response.WriteAsync(JsonSerializer.Serialize(new
-        {
-            success = false,
-            message = "Erro interno no servidor"
-        }));
     }
 }

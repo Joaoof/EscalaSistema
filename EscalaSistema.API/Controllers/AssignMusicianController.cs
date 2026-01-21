@@ -1,4 +1,5 @@
 ﻿using EscalaSistema.API.DTOs;
+using EscalaSistema.API.Interface.UseCase;
 using EscalaSistema.API.UseCase;
 using Microsoft.AspNetCore.Mvc;
 
@@ -11,7 +12,7 @@ public class AssignMusicianController: ControllerBase
     [HttpPost("{scaleId}/assignments")]
     public async Task<IActionResult> AssignMusician(
     Guid scaleId,
-    [FromBody] AssignMusicianToScaleRequest request, [FromServices] AssignMusicianUseCase assignMusicianUseCase)
+    [FromBody] AssignMusicianToScaleRequest request, [FromServices] IAssignMusicianUseCase assignMusicianUseCase)
     {
         await assignMusicianUseCase.Register(scaleId, request);
         return NoContent();

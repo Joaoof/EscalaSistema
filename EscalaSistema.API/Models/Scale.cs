@@ -15,6 +15,6 @@ public class Scale
     {
         IsPublished = true;
         IsClosed = true;
-        PublishedAt = DateTime.Now;
+        PublishedAt = DateTime.UtcNow;
     }
 }

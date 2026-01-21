@@ -1,5 +1,6 @@
 ﻿using EscalaSistema.API.DTOs;
 using EscalaSistema.API.Interface.UseCase;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EscalaSistema.API.Controllers;
@@ -9,9 +10,15 @@ namespace EscalaSistema.API.Controllers;
 public class MusiciansController: ControllerBase
 {
     [HttpPost]
+    [Authorize]
     public async Task<IActionResult> Create([FromBody] CreateMusicianRequest request, [FromServices] ICreateMusicianUseCase createMusicianUseCase)
     {
-        var userId = Guid.Parse(User.FindFirst("userId").Value ?? Guid.Empty.ToString());
+        var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+        if (userIdClaim == null)
+            return Unauthorized("Token sem identificação de usuário.");
+    
+        var userId = Guid.Parse(userIdClaim);
 
         var response = await createMusicianUseCase.Execute(request, userId);
 

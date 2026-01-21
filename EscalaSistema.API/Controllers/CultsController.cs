@@ -14,7 +14,7 @@ public class CultController : ControllerBase
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<IActionResult> Create([FromBody] CultResponse cut, [FromServices] ICultUseCase cultUseCase)
+    public async Task<IActionResult> Create([FromBody] CultRequest cut, [FromServices] ICultUseCase cultUseCase)
     {
         var cult = await cultUseCase.Register(cut);
 
