@@ -5,17 +5,25 @@ using Microsoft.AspNetCore.Authorization;
 
 public class CanPublishScaleHandler : AuthorizationHandler<CanPublishScaleRequirement>
 {
-    protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, CanPublishScaleRequirement requirement)
+    protected override Task HandleRequirementAsync(
+        AuthorizationHandlerContext context,
+        CanPublishScaleRequirement requirement)
     {
-        if (!context.User.Identity?.IsAuthenticated ?? true)
-            throw new DomainException(AuthErrors.NotAuthenticated);
+        // 1. Não autenticado → 401
+        if (!(context.User.Identity?.IsAuthenticated ?? false))
+        {
+            context.Fail();
+            return Task.CompletedTask;
+        }
 
+        // 2. Não autorizado → 403
         if (!context.User.IsInRole("Leader"))
-            throw new DomainException(AuthErrors.NotAllowedToPublishScale);
+        {
+            context.Fail();
+            return Task.CompletedTask;
+        }
 
-        if (!context.User.IsInRole("Leader"))
-            throw new DomainException(AuthErrors.NotAllowedToModifyScale);
-
+        // 3. Autorizado
         context.Succeed(requirement);
         return Task.CompletedTask;
     }

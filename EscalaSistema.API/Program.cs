@@ -149,6 +149,27 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseStatusCodePages(async ctx =>
+{
+    var response = ctx.HttpContext.Response;
+
+    if (response.StatusCode == 401)
+    {
+        response.ContentType = "application/json";
+        await response.WriteAsync("""
+        { "error": "Usuário não autenticado" }
+        """);
+    }
+
+    if (response.StatusCode == 403)
+    {
+        response.ContentType = "application/json";
+        await response.WriteAsync("""
+        { "error": "Você não tem permissão para executar esta ação" }
+        """);
+    }
+});
+
 app.UseAuthentication();
 
 app.UseAuthorization();
@@ -156,6 +177,8 @@ app.UseAuthorization();
 app.UseHttpsRedirection();
 
 app.MapControllers();
+
+
 
 app.UseMiddleware<CustomExceptionMiddleware>();
 

@@ -6,4 +6,5 @@ namespace EscalaSistema.API.Interface.Repository;
 public interface ILoginRepository
 {
     Task<User?> GetByEmailAsync(string email);
+    Task<User?> GetBySidAsync(Guid sid);
 }

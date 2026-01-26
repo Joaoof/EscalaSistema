@@ -32,11 +32,10 @@ public class CultRepository : ICultRepository
 
     public async Task<CultResponse> AddAsync(CultRequest cult)
     {
-       var register = await _context.Cults.AddAsync(new Cult
-        {
-            Name = cult.Name,
-            DateTime = cult.DateTime,
-        });
+        var register = await _context.Cults.AddAsync(new Cult(
+            cult.Name,
+            cult.DateTime
+        ));
         await _context.SaveChangesAsync();
 
         return new CultResponse

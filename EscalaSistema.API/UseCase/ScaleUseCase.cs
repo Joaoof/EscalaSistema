@@ -2,7 +2,6 @@
 using EscalaSistema.API.Domain.Errors;
 using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Interface.UseCase;
-using EscalaSistema.API.Middleware;
 using EscalaSistema.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -25,5 +24,21 @@ public class ScaleUseCase : ICreateScaleUseCase
         if(exits)
             throw new DomainException(ScaleErrors.AlreadyExists);
         return await _repository.CreateAsync(cultId);
+    }
+
+    public async Task<Scale> Update(Guid Id, Scale scale)
+    {
+        var cultExists = await _context.Cults.AnyAsync(c => c.Id == scale.CultId);
+        if (!cultExists)
+            throw new DomainException(CultErrors.CultNotFound);
+
+        return await _repository.UpdateAsync(Id, scale);
+    }
+
+    public async Task<List<Scale>> Get()
+    {
+        var get = await _repository.GetByAllScale();
+
+        return get;
     }
 }

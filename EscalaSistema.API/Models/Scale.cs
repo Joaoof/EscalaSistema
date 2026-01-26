@@ -1,10 +1,13 @@
-﻿namespace EscalaSistema.API.Models; 
+﻿using EscalaSistema.API.Enum;
+
+namespace EscalaSistema.API.Models; 
 
 public class Scale
 {
     public Guid Id { get; set; }
     public Guid CultId { get; set; }
     public Cult Cult { get; set; }
+    public ScaleConfirmedEnum Status { get; set; }
     public bool IsPublished { get; set; }
     public bool IsClosed { get; set; }
     public DateTime PublishedAt { get; set; }

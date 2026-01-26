@@ -4,5 +4,7 @@ namespace EscalaSistema.API.Interface.UseCase;
 
 public interface ICreateScaleUseCase
 {
+    Task<List<Scale>> Get();
     Task<Scale> Register(Guid cultId);
+    Task<Scale> Update(Guid Id, Scale scale);
 }

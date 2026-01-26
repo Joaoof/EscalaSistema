@@ -1,7 +1,6 @@
 ﻿using EscalaSistema.API.DTOs.Login;
 using EscalaSistema.API.Interface.UseCase;
-using EscalaSistema.API.Models;
-using EscalaSistema.API.Service;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EscalaSistema.API.Controllers;
@@ -16,4 +15,20 @@ public class LoginController: ControllerBase
         var result = await loginService.AuthenticateAsync(request);
         return Ok(result);
     }
+
+    [HttpGet]
+    [Route("/api/auth/me")]
+    [Authorize(Roles = "Leader")]
+    [Authorize(Policy = "CanPublishScale")]
+    public async Task<IActionResult> GetCurrentUserInfo([FromServices] ILoginService loginService)
+    {
+        var user = await loginService.GetCurrentUserInfo(User);
+        return Ok(new
+        {
+            user.Id,
+            user.Username,
+            user.Role
+        });
+    }
+
 }

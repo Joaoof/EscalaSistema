@@ -19,12 +19,7 @@ public class CultUseCase : ICultUseCase
 
     public async Task<CultResponse> Register(CultRequest cult)
     {
-        var register = new Cult
-        {
-            Name = cult.Name,   
-            DateTime = cult.DateTime,
-            
-        };
+        var register = new Cult(cult.Name, cult.DateTime);
 
         var validationResult = await _validator.ValidateAsync(cult);
         if (!validationResult.IsValid)

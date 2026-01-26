@@ -10,4 +10,7 @@ public static class AuthErrors
 
     public static readonly DomainError NotAllowedToModifyScale =
         new("AUTH_003", "Usuário não permitido para modificar escala", "Somente líderes podem modificar a escala",403);
+
+    public static readonly DomainError NotValid = 
+        new("AUTH_004", "Autenticação inválida", "As credenciais fornecidas são inválidas", 401);
 }

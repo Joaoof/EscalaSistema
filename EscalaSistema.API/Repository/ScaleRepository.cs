@@ -1,6 +1,6 @@
 ﻿using EscalaSistema.API.Data;
+using EscalaSistema.API.Domain.Errors;
 using EscalaSistema.API.Interface.Repository;
-using EscalaSistema.API.Middleware;
 using EscalaSistema.API.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,7 +19,7 @@ public class ScaleRepository : ICreateScaleRepository
     {
         var cultExists = await _context.Cults.AnyAsync(c => c.Id == cultId);
         if (!cultExists)
-            throw new NotFoundException("Culto não encontrado");
+            throw new DomainException(CultErrors.CultNotFound);
 
         var scale = new Scale
         {
@@ -33,5 +33,27 @@ public class ScaleRepository : ICreateScaleRepository
         await _context.SaveChangesAsync();
 
         return scale;
+    }
+
+    public async Task<Scale> UpdateAsync(Guid Id, Scale scale) 
+    {
+        var existingScale = await _context.Scales.FindAsync(Id);
+        if (existingScale == null)
+            throw new DomainException(CultErrors.CultNotFound);
+
+        existingScale.CultId = scale.CultId;
+        existingScale.IsPublished = scale.IsPublished;
+        existingScale.IsClosed = scale.IsClosed;
+
+        _context.Scales.Update(existingScale);
+        await _context.SaveChangesAsync();
+        return existingScale;
+    }
+
+    public async Task<List<Scale>> GetByAllScale()
+    {
+        var scales = await _context.Scales.ToListAsync();
+
+        return scales;  
     }
 }

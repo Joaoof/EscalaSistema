@@ -18,4 +18,9 @@ public class LoginRepository: ILoginRepository
     {
         return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
+
+    public async Task<User?> GetBySidAsync(Guid sid)
+    {
+        return await _context.Users.FirstOrDefaultAsync(u => u.Id == sid);
+    }
 }
