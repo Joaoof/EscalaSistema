@@ -34,26 +34,43 @@ public class ScaleRepository : ICreateScaleRepository
 
         return scale;
     }
-
-    public async Task<Scale> UpdateAsync(Guid Id, Scale scale) 
+    public async Task<List<Scale>> GetByMonthAsync(int month, int year)
     {
-        var existingScale = await _context.Scales.FindAsync(Id);
-        if (existingScale == null)
-            throw new DomainException(CultErrors.CultNotFound);
-
-        existingScale.CultId = scale.CultId;
-        existingScale.IsPublished = scale.IsPublished;
-        existingScale.IsClosed = scale.IsClosed;
-
-        _context.Scales.Update(existingScale);
-        await _context.SaveChangesAsync();
-        return existingScale;
+        return await _context.Scales
+            .Include(s => s.Cult) // Precisamos da data do culto
+            .Include(s => s.ScaleAssignments) // Precisamos saber quem já está escalado
+            .Where(s => s.Cult.DateTime.Month == month && s.Cult.DateTime.Year == year)
+            .ToListAsync();
     }
 
-    public async Task<List<Scale>> GetByAllScale()
+    public async Task CloseScale()
     {
-        var scales = await _context.Scales.ToListAsync();
+        await _context.SaveChangesAsync();
+    }
 
-        return scales;  
+    public async Task SaveChangesAsync()
+    {
+        await _context.SaveChangesAsync();
+    }
+
+    public async Task<Scale?> GetByIdAsync(Guid id)
+    {
+        return await _context.Scales
+            .Include(s => s.ScaleAssignments) // Importante carregar a lista!
+            .FirstOrDefaultAsync(s => s.Id == id);
+    }
+
+    public void Add(Scale scale)
+    {
+        _context.Scales.Add(scale);
+    }
+
+    public async Task<List<Scale>> GetByCultIdsAsync(List<Guid> cultIds)
+    {
+        return await _context.Scales
+            .Include(s => s.Cult)
+            .Include(s => s.ScaleAssignments) // Importante trazer os músicos!
+            .Where(s => cultIds.Contains(s.CultId))
+            .ToListAsync();
     }
 }

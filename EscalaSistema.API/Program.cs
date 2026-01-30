@@ -1,4 +1,5 @@
 using EscalaSistema.API.Data;
+using EscalaSistema.API.DTOs;
 using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Interface.UseCase;
 using EscalaSistema.API.Middleware;
@@ -66,6 +67,9 @@ builder.Services.AddSwaggerGen(c =>
 builder.Services.AddValidatorsFromAssemblyContaining<Program>();
 builder.Services.AddValidatorsFromAssemblyContaining<PublishScaleValidation>();
 builder.Services.AddValidatorsFromAssemblyContaining<CultRequestValidation>();
+builder.Services.AddValidatorsFromAssemblyContaining<BulkAssignRequest>();
+
+builder.Services.AddScoped<IValidator<BulkAssignRequest>, BulkAssignRequestValidation>();
 builder.Services.AddScoped<IValidator<User>, UserValidation>();
 
 builder.Services.AddScoped<ICultRepository, CultRepository>();
@@ -81,8 +85,6 @@ builder.Services.AddScoped<ICreateScaleUseCase, ScaleUseCase>();
 builder.Services.AddScoped<ICreateScaleRepository, ScaleRepository>();
 
 builder.Services.AddScoped<IAssignMusicianUseCase, AssignMusicianUseCase>();
-builder.Services.AddScoped<IAssignMusicianRepository, AssignMusicianRepository>();
-
 builder.Services.AddScoped<ICreateMusicianUseCase, CreateMusicianUseCase>();
 builder.Services.AddScoped<IMusicianRepository, MusicianRepository>();
 
@@ -93,6 +95,8 @@ builder.Services.AddScoped<ILoginService, LoginService>();
 builder.Services.AddScoped<ILoginRepository,LoginRepository>();
 
 builder.Services.AddScoped<ITokenService ,TokenService>();
+
+builder.Services.AddScoped<IBulkAssignUseCase, BulkAssignUseCase>();
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

@@ -34,8 +34,8 @@ namespace EscalaSistema.API.Migrations
                     b.Property<DateTime>("DateTime")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<DateTime>("IsPublished")
-                        .HasColumnType("timestamp with time zone");
+                    b.Property<bool>("IsPublished")
+                        .HasColumnType("boolean");
 
                     b.Property<Guid>("MusicId")
                         .HasColumnType("uuid");
@@ -134,6 +134,9 @@ namespace EscalaSistema.API.Migrations
 
                     b.Property<DateTime>("PublishedAt")
                         .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("integer");
 
                     b.Property<DateTime>("UpdatedAt")
                         .HasColumnType("timestamp with time zone");

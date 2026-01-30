@@ -31,4 +31,7 @@ public static class ScaleErrors
 
     public static readonly DomainError InsufficientPermissions =
         new("SCALE_010", "Permissões insuficientes para modificar a escala", "Permissões insuficientes para modificar a escala", 403);
+
+    public static readonly DomainError IsNotScaleAssignments =
+        new("SCALE_011", "Nenhum músico atribuído a esta escala", "Nenhum músico atribuído a esta escala", 404);
 }

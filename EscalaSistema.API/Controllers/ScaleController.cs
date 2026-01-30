@@ -1,4 +1,5 @@
-﻿using EscalaSistema.API.Interface.UseCase;
+﻿using EscalaSistema.API.DTOs;
+using EscalaSistema.API.Interface.UseCase;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -25,35 +26,54 @@ public class ScaleController : ControllerBase
 
     }
 
-    [HttpPut]
-    [Authorize(Roles = "Leader")]
-    [Authorize(Policy = "CanPublishScale")]
-    public async Task<IActionResult> Update(Guid id, [FromBody] Models.Scale scale, [FromServices] ICreateScaleUseCase createScaleUseCase)
+    //[HttpPut]
+    //[Authorize(Roles = "Leader")]
+    //[Authorize(Policy = "CanPublishScale")]
+    //public async Task<IActionResult> Update(Guid id, [FromBody] Models.Scale scale, [FromServices] ICreateScaleUseCase createScaleUseCase)
+    //{
+    //    var updatedScale = await createScaleUseCase.Update(id, scale);
+    //    return Ok(new
+    //    {
+    //        updatedScale.Id,
+    //        updatedScale.CultId,
+    //        updatedScale.IsPublished,
+    //        updatedScale.IsClosed,
+    //    });
+    //}
+
+    //[HttpGet]
+    //[Authorize(Roles = "Leader")]
+    //[Authorize(Policy = "CanPublishScale")]
+    //public async Task<IActionResult> Get([FromServices] ICreateScaleUseCase createScaleUseCase)
+    //{
+    //    var scales = await createScaleUseCase.Get();
+    //    var result = scales.Select(scale => new
+    //    {
+    //        scale.Id,
+    //        scale.CultId,
+    //        scale.IsPublished,
+    //        scale.IsClosed,
+    //    });
+    //    return Ok(result);
+    //}
+
+    [HttpPatch]
+    [Route("scale/{id}/close")]
+    [Authorize]
+    public async Task<IActionResult> CloseScale(Guid id, [FromServices] ICreateScaleUseCase createScaleUseCase)
     {
-        var updatedScale = await createScaleUseCase.Update(id, scale);
-        return Ok(new
-        {
-            updatedScale.Id,
-            updatedScale.CultId,
-            updatedScale.IsPublished,
-            updatedScale.IsClosed,
-        });
+        var closedScale = await createScaleUseCase.ScaleClosed(id);
+        return Ok(closedScale);
     }
 
-    [HttpGet]
-    [Authorize(Roles = "Leader")]
-    [Authorize(Policy = "CanPublishScale")]
-    public async Task<IActionResult> Get([FromServices] ICreateScaleUseCase createScaleUseCase)
+    [HttpPost]
+    [Route("scale/bulk-assign")]
+    //[Authorize(Roles = "Leader")] // Segurança
+    public async Task<IActionResult> BulkAssign(
+        [FromBody] BulkAssignRequest request,
+        [FromServices] IBulkAssignUseCase bulkAssignUseCase)
     {
-        var scales = await createScaleUseCase.Get();
-        var result = scales.Select(scale => new
-        {
-            scale.Id,
-            scale.CultId,
-            scale.IsPublished,
-            scale.IsClosed,
-        });
-        return Ok(result);
+        await bulkAssignUseCase.Execute(request);
+        return NoContent(); // Sucesso 204
     }
-
 }

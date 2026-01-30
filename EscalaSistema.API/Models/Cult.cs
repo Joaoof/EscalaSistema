@@ -27,14 +27,14 @@ public class Cult
         if (name.Length >= 500)
             throw new DomainException(CultErrors.InvalidNameCultTooLong);
 
-        if (dateTime < DateTime.Now)
+        if (dateTime < DateTime.UtcNow)
             throw new DomainException(CultErrors.InvalidDateTimeCannotPast);
 
         Name = name;
         DateTime = dateTime;
         IsPublished = false;
-        CreatedAt = DateTime.Now;
-        UpdatedAt = DateTime.Now;
+        CreatedAt = DateTime.UtcNow;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void Publicar()
@@ -42,11 +42,11 @@ public class Cult
         if (IsPublished)
             throw new DomainException(CultErrors.IsPublished);
 
-        if (DateTime < DateTime.Now)
+        if (DateTime < DateTime.UtcNow)
             throw new DomainException(CultErrors.CannotPublishPastCult);
 
         IsPublished = true;
-        UpdatedAt = DateTime.Now;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void UpdateName(string name)
@@ -55,22 +55,22 @@ public class Cult
             throw new DomainException(CultErrors.InvalidNameCult);
 
         Name = name;
-        UpdatedAt = DateTime.Now;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void UpdateDateTime(DateTime dateTime)
     {
-        if (dateTime < DateTime.Now)
+        if (dateTime < DateTime.UtcNow)
             throw new DomainException(CultErrors.InvalidDateTimeCannotPast);
 
         DateTime = dateTime;
-        UpdatedAt = DateTime.Now;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void UpdateMusicId(Guid musicId)
     {
         MusicId = musicId;
-        UpdatedAt = DateTime.Now;
+        UpdatedAt = DateTime.UtcNow;
     }
 
     public void AddMusic(Music music)
@@ -82,6 +82,6 @@ public class Cult
             throw new DomainException(MusicErrors.MusicCount);
 
         _musics.Add(music);
-        UpdatedAt = DateTime.Now;
+        UpdatedAt = DateTime.UtcNow;
     }
 }

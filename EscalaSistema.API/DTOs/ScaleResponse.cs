@@ -5,7 +5,7 @@ public class ScaleResponse
     public Guid Id { get; set; }
     public Guid CultId { get; set; }
 
-    public bool IsPublished { get; set; }
+    public bool IsPublished { get; set; } 
     public bool IsClosed { get; set; }
 
     public bool PublishedAt { get; set; }

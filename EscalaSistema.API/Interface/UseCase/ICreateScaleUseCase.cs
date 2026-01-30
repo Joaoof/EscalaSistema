@@ -1,10 +1,11 @@
-﻿using EscalaSistema.API.Models;
+﻿using EscalaSistema.API.DTOs;
+using EscalaSistema.API.Models;
 
 namespace EscalaSistema.API.Interface.UseCase;
 
 public interface ICreateScaleUseCase
 {
-    Task<List<Scale>> Get();
+    //Task<List<Scale>> Get();
     Task<Scale> Register(Guid cultId);
-    Task<Scale> Update(Guid Id, Scale scale);
+    Task<ScaleResponse> ScaleClosed(Guid id);
 }

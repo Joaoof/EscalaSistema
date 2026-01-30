@@ -1,5 +1,6 @@
 ﻿using EscalaSistema.API.Data;
 using EscalaSistema.API.Domain.Errors;
+using EscalaSistema.API.DTOs;
 using EscalaSistema.API.Interface.Repository;
 using EscalaSistema.API.Interface.UseCase;
 using EscalaSistema.API.Models;
@@ -26,19 +27,26 @@ public class ScaleUseCase : ICreateScaleUseCase
         return await _repository.CreateAsync(cultId);
     }
 
-    public async Task<Scale> Update(Guid Id, Scale scale)
+    //public async Task<List<Scale>> Get()
+    //{
+    //    var get = await _repository.();
+
+    //    return get;
+    //}
+
+    public async Task<ScaleResponse> ScaleClosed(Guid id)
     {
-        var cultExists = await _context.Cults.AnyAsync(c => c.Id == scale.CultId);
-        if (!cultExists)
-            throw new DomainException(CultErrors.CultNotFound);
+        var scale = await _context.Scales.FindAsync(id) ?? throw new DomainException(ScaleErrors.NotFound);
 
-        return await _repository.UpdateAsync(Id, scale);
-    }
+        scale.Close();
 
-    public async Task<List<Scale>> Get()
-    {
-        var get = await _repository.GetByAllScale();
+        await _repository.CloseScale();
 
-        return get;
+        return new ScaleResponse
+        {
+            Id = scale.Id,
+            IsPublished = scale.IsPublished,
+            IsClosed = scale.IsClosed,
+        };
     }
 }

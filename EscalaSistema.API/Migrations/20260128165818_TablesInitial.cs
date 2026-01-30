@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace EscalaSistema.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialTables : Migration
+    public partial class TablesInitial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -18,7 +18,7 @@ namespace EscalaSistema.API.Migrations
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     Name = table.Column<string>(type: "text", nullable: false),
                     DateTime = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
-                    IsPublished = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    IsPublished = table.Column<bool>(type: "boolean", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     MusicId = table.Column<Guid>(type: "uuid", nullable: false)
@@ -92,6 +92,7 @@ namespace EscalaSistema.API.Migrations
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     CultId = table.Column<Guid>(type: "uuid", nullable: false),
+                    Status = table.Column<int>(type: "integer", nullable: false),
                     IsPublished = table.Column<bool>(type: "boolean", nullable: false),
                     IsClosed = table.Column<bool>(type: "boolean", nullable: false),
                     PublishedAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
